@@ -153,7 +153,6 @@ class BaseLoader(Dataset):
     def resize(self, frames, w, h, larger_box, face_detection, crop_face):
         """Resizes each frame, crops the face area if flag is true."""
         if face_detection:
-            print(frames.shape)
             face_region = self.facial_detection(frames[0], larger_box)
         else:
             face_region = frames[0]
@@ -189,7 +188,7 @@ class BaseLoader(Dataset):
         """Saves the preprocessing data."""
         if (not os.path.exists(self.cached_path)):
             os.makedirs(self.cached_path)
-            print(self.cached_path)
+            print('cached_path: ', self.cached_path)
         count = 0
         filename = os.path.split(filename)[-1]
         for i in range(len(bvps_clips)):
@@ -208,9 +207,7 @@ class BaseLoader(Dataset):
     def load(self):
         """Loads the preprocessing data."""
         inputs = glob.glob(os.path.join(self.cached_path, "*input*.npy"))
-        print(self.cached_path)
         labels = [input.replace("input", "label") for input in inputs]
-        print(labels[0])
         assert (len(inputs) == len(labels))
         self.inputs = inputs
         self.labels = labels

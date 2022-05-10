@@ -16,7 +16,7 @@ import glob
 import re
 import scipy.io
 import mat73
-
+from tqdm import tqdm
 
 class SyntheticsLoader(BaseLoader):
     """The data loader for the SyntheticsProcessed dataset."""
@@ -50,12 +50,10 @@ class SyntheticsLoader(BaseLoader):
 
     def preprocess_dataset(self, data_dirs, config_preprocess):
         """Preprocesses the raw data."""
-        print(data_dirs)
         file_num = len(data_dirs)
-        for i in range(file_num):
+        for i in tqdm(range(file_num)):
             # filename = os.path.split(self.data_dirs[i]['path'])[-1]
             matfile_path = data_dirs[i]['path']
-            print('matfile_path: ', matfile_path)
             frames = self.read_video(matfile_path)
             bvps = self.read_wave(matfile_path)
             frames_clips, bvps_clips = self.preprocess(
