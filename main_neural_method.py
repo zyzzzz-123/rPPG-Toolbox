@@ -20,7 +20,7 @@ from config import get_config
 from torch.utils.data import DataLoader
 from dataset import data_loader
 from neural_methods import trainer
-
+import torch
 
 def get_UBFC_data(config):
     """Returns directories for train sets, validation sets and test sets.
@@ -55,23 +55,6 @@ def get_PURE_data(config):
     return dirs
 
 
-def get_Synthetics_data(config):
-    """Returns directories for train sets, validation sets and test sets.
-    For the dataset structure, see dataset/dataloader/SyntheticProcessed_dataloader.py """
-    train_data_dirs = glob.glob(config.DATA.TRAIN_DATA_PATH + os.sep + "*.mat")
-    train_dirs = list()
-    for data_dir in train_data_dirs:
-        subject = os.path.split(data_dir)[-1]
-        train_dirs.append({"index": subject, "path": data_dir})
-
-    val_data_dirs = glob.glob(config.DATA.VAL_DATA_PATH + os.sep + "*.mat")
-    val_dirs = list()
-    for data_dir in val_data_dirs:
-        subject = os.path.split(data_dir)[-1]
-        val_dirs.append({"index": subject, "path": data_dir})
-    data_dict = {"train": train_dirs, "val": val_dirs}
-    return data_dict
-
 def add_args(parser):
     """Adds arguments for parser."""
     parser.add_argument('--config_file', required=False,
@@ -86,7 +69,8 @@ def add_args(parser):
     parser.add_argument('--data_path', default="G:\\COHFACE\\RawData", required=False,
                         type=str, help='The path of the data directory.')
     parser.add_argument('--epochs', default=None, type=int)
-    parser.add_argument('--log_path', default=None, type=str)
+    parser.add_argument('--log_level', default="DEBUG", type=str)
+    parser.add_argument('--log_path', default="cmd", type=str)
     parser.add_argument('--model_dir', default=None, type=str)
     return parser
 
@@ -114,13 +98,38 @@ if __name__ == "__main__":
 
     # configurations.
     config = get_config(args)
-
+    if args.log_path=="cmd":
+        if args.log_level=="DEBUG" :
+            logging.basicConfig(level=logging.DEBUG)
+        elif args.log_level=="INFO":
+            logging.basicConfig(level=logging.INFO)
+        elif args.log_level=="WARNING":
+            logging.basicConfig(level=logging.WARNING)
+        elif args.log_level=="ERROR":
+            logging.basicConfig(level=logging.ERROR)
+        elif args.log_level=="CRITICAL":
+            logging.basicConfig(level=logging.CRITICAL)
+    else:
+        if args.log_level=="DEBUG" :
+            logging.basicConfig(level=logging.DUBUG,filemode='w',filename=args.log_path)
+        elif args.log_level=="INFO":
+            logging.basicConfig(level=logging.INFO,filemode='w',filename=args.log_path)
+        elif args.log_level=="WARNING":
+            logging.basicConfig(level=logging.WARNING,filemode='w',filename=args.log_path)
+        elif args.log_level=="ERROR":
+            logging.basicConfig(level=logging.ERROR,filemode='w',filename=args.log_path)
+        elif args.log_level=="CRITICAL":
+            logging.basicConfig(level=logging.CRITICAL,filemode='w',filename=args.log_path)
     # logging.
     # utils.check_dir(args.log_file)
     # logging.basicConfig(filename=args.log_file, level=args.verbose)
     # logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
     # logging.info(config)
-
+    #logging.debug("debug_msg")
+    #logging.info("info_msg")
+    #logging.warning("warning_msg")
+    #logging.error("error_msg")
+    #logging.critical("critical_msg")
     # loads data
     if config.DATA.DATASET == "COHFACE":
         data_files = get_COHFACE_data(config)
@@ -131,16 +140,15 @@ if __name__ == "__main__":
     elif config.DATA.DATASET == "PURE":
         data_files = get_PURE_data(config)
         loader = data_loader.PURELoader.PURELoader
-    elif config.DATA.DATASET == "SYNTHETICS":
-        data_dict = get_Synthetics_data(config)
-        loader = data_loader.SyntheticsLoader.SyntheticsLoader
     else:
         raise ValueError(
             "Unsupported dataset! Currently supporting COHFACE, UBFC and PURE.")
+    print(data_files)
     train_data = loader(
         name="train",
-        data_dirs=data_dict["train"],
+        data_dirs=data_files[:-config.DATA.VALID_SUBJ],
         config_data=config.DATA)
+    #train_data=train_data.to(device)
     dataloader = {
         "train": DataLoader(
             dataset=train_data,
@@ -149,11 +157,11 @@ if __name__ == "__main__":
             shuffle=True),
     }
 
-    if True: # TODO: This requires supporting if users don't want to have validation at all. 
+    if config.DATA.VALID_SUBJ:
         valid_data = loader(
             name="valid",
-            data_dirs=data_dict["val"],
-            config_data=config.DATA)
+            data_dirs=data_files[-config.DATA.VALID_SUBJ:],
+            config_data=config.DATA)  
         dataloader["valid"] = DataLoader(
             dataset=valid_data,
             num_workers=2,
@@ -162,5 +170,3 @@ if __name__ == "__main__":
     else:
         dataloader['valid'] = None
     train(config, dataloader)
-
-
