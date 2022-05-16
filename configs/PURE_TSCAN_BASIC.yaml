@@ -1,6 +1,7 @@
 BASE: ['']
 DATA:
-  FS: 20 
+  TRAIN_DATA_PATH: "/gscratch/ubicomp/xliu0/data3/mnt/Datasets/PURE/RawData/"
+  FS: 20
   DATASET: PURE
   DO_PREPROCESS: False
   DATA_FORMAT: NDCHW
@@ -17,6 +18,7 @@ LOG:
 MODEL:
   DROP_RATE: 0.2
   NAME: Tscan
+  MODEL_DIR: SavedModels
   TSCAN:
     FRAME_DEPTH: 10
 TRAIN:
