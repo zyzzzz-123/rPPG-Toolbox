@@ -2,15 +2,16 @@ BASE: ['']
 DATA:
   FS: 30
   DATASET: PURE
-  DO_PREPROCESS: False
+  DO_PREPROCESS: True
   DATA_FORMAT: NDCHW
   PREPROCESS :
     DATA_TYPE: ['Normalized','Standardized']
     LABEL_TYPE : Normalized
     CLIP_LENGTH: 180
     CROP_FACE: True
-    H: 36
-    W: 36
+    H: 72
+    W: 72
+  TEST_DATA_PATH: "/gscratch/ubicomp/xliu0/data3/mnt/Datasets/PURE/RawData"
 DEVICE: cuda:0
 LOG:
   PATH: runs/exp
@@ -21,5 +22,6 @@ MODEL:
     FRAME_DEPTH: 10
 INFERENCE:
   BATCH_SIZE: 1
+  MODEL_PATH: '/gscratch/ubicomp/xliu0/rPPG-Toolbox/store_model/tscan.pth'
 TEST:
   METRICS: ['MAE','RMSE','MAPE','Pearson']

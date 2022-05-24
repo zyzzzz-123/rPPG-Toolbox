@@ -22,6 +22,6 @@ MODEL:
     FRAME_DEPTH: 10
 INFERENCE:
   BATCH_SIZE: 1
-  MODEL_PATH: '/gscratch/ubicomp/xliu0/rPPG-Toolbox/SavedModels/tscan.pth'
+  MODEL_PATH: '/gscratch/ubicomp/xliu0/rPPG-Toolbox/store_model/tscan.pth'
 TEST:
   METRICS: ['MAE','RMSE','MAPE','Pearson']
