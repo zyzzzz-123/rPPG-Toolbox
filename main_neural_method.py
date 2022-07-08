@@ -44,7 +44,7 @@ def seed_worker(worker_id):
 def add_args(parser):
     """Adds arguments for parser."""
     parser.add_argument('--config_file', required=False,
-                        default="configs/PURE_PHYSNET_BASIC.yaml", type=str, help="The name of the model.")
+                        default="configs/UBFC_DEEPPHYS_EVALUATION.yaml", type=str, help="The name of the model.")
     parser.add_argument('--do_train', action='store_true')
     parser.add_argument(
         '--device',
@@ -153,4 +153,19 @@ if __name__ == "__main__":
             )
     else:
         data_loader['valid'] = None
+    if config.DATA.TEST_DATA_PATH:
+        valid_data = loader(
+            name="test",
+            data_path=config.DATA.TEST_DATA_PATH,
+            config_data=config.DATA)
+        data_loader["test"] = DataLoader(
+            dataset=valid_data,
+            num_workers=4,
+            batch_size=config.TRAIN.BATCH_SIZE,
+            shuffle=True,
+            worker_init_fn=seed_worker,
+            generator=g
+            )
+    else:
+        data_loader['test'] = None
     train(config, data_loader)
