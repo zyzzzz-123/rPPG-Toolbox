@@ -2,10 +2,12 @@ BASE: ['']
 DATA:
   FS: 30
   DATASET: UBFC
-  DO_PREPROCESS: False
+  DO_PREPROCESS: True
   DATA_FORMAT: NDCHW
   TEST_DATA_PATH:   "/data1/toolbox_data/UBFC/RawData"
-  EXP_DATA_NAME: "test_UBFC_SizeW72_SizeH72_ClipLength180_DataTypeNormalized_Standardized_LabelTypeNormalized"
+  EXP_DATA_NAME:   "test_UBFC_SizeW72_SizeH72_ClipLength180_DataTypeNormalized_Standardized_LabelTypeNormalized"
+
+#  "test_UBFC_SizeW72_SizeH72_ClipLength180_DataTypeNormalized_Standardized_LabelTypeNormalized"
   PREPROCESS :
     DATA_TYPE: ['Normalized','Standardized']
     LABEL_TYPE : Normalized
@@ -22,6 +24,8 @@ MODEL:
   NAME: DeepPhys
 INFERENCE:
   BATCH_SIZE: 1
-  MODEL_PATH:   "/data1/acsp/Yuzhe_Zhang/rPPG-Toolbox/PretrainedModels/deepphys_synthetics_10epoch_geforce2080ti_Epoch9.pth"
+#  PRETRAINED: True
+  MODEL_PATH:   "/data1/acsp/Yuzhe_Zhang/Toolbox_master/rPPG-Toolbox/PretrainedModels/deepphys_synthetics_10epoch_geforce2080ti_Epoch9.pth"
 TEST:
   METRICS: ['MAE','RMSE','MAPE','Pearson']
+

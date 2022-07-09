@@ -22,6 +22,6 @@ MODEL:
   NAME: DeepPhys
 INFERENCE:
   BATCH_SIZE: 1
-  MODEL_PATH: './PreTrainedModels/deepphys_synthetics_10epoch_geforce2080ti_Epoch9.pth'
+  MODEL_PATH: "/data1/acsp/Yuzhe_Zhang/Toolbox_master/rPPG-Toolbox/PretrainedModels/deepphys_synthetics_10epoch_geforce2080ti_Epoch9.pth"
 TEST:
   METRICS: ['MAE','RMSE','MAPE','Pearson']
